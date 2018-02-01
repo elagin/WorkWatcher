@@ -43,14 +43,14 @@
             // 
             this.textBoxUserName.Location = new System.Drawing.Point(12, 12);
             this.textBoxUserName.Name = "textBoxUserName";
-            this.textBoxUserName.Size = new System.Drawing.Size(226, 20);
+            this.textBoxUserName.Size = new System.Drawing.Size(191, 20);
             this.textBoxUserName.TabIndex = 1;
             // 
             // textBoxEventCount
             // 
-            this.textBoxEventCount.Location = new System.Drawing.Point(325, 12);
+            this.textBoxEventCount.Location = new System.Drawing.Point(512, 12);
             this.textBoxEventCount.Name = "textBoxEventCount";
-            this.textBoxEventCount.Size = new System.Drawing.Size(335, 20);
+            this.textBoxEventCount.Size = new System.Drawing.Size(148, 20);
             this.textBoxEventCount.TabIndex = 2;
             // 
             // label1
