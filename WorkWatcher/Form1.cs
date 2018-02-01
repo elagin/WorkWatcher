@@ -134,9 +134,10 @@ namespace WorkWatcher
                     }
                 }
             }
-            myForm.textBoxTotalWork.Text = totalWork.ToString(@"hh\:mm\:ss");
-            //myForm.textBoxTotalWait.Text = ((hourPerDay * 4) - totalWork).ToString(@"hh\:mm");
-            myForm.textBoxTotalWait.Text = ((hourPerDay * 4) - totalWork.TotalHours).ToString();
+
+            myForm.textBoxTotalWork.Text = ((int)totalWork.TotalHours).ToString() + ":" + totalWork.Minutes.ToString();
+            TimeSpan timeLeft = new TimeSpan(hourPerDay * 4, 0, 0) - totalWork;
+            myForm.textBoxTotalWait.Text = timeLeft.ToString(@"hh\:mm");
         }
 
         private static bool isFoundByUsername(EventLogEntry entry, string userName)

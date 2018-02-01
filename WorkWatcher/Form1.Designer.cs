@@ -48,7 +48,7 @@
             // 
             // textBoxEventCount
             // 
-            this.textBoxEventCount.Location = new System.Drawing.Point(512, 12);
+            this.textBoxEventCount.Location = new System.Drawing.Point(427, 12);
             this.textBoxEventCount.Name = "textBoxEventCount";
             this.textBoxEventCount.Size = new System.Drawing.Size(148, 20);
             this.textBoxEventCount.TabIndex = 2;
@@ -56,7 +56,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 48);
+            this.label1.Location = new System.Drawing.Point(14, 43);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 13);
             this.label1.TabIndex = 3;
@@ -66,20 +66,20 @@
             // 
             this.textBoxStartWeek.Location = new System.Drawing.Point(103, 40);
             this.textBoxStartWeek.Name = "textBoxStartWeek";
-            this.textBoxStartWeek.Size = new System.Drawing.Size(100, 20);
+            this.textBoxStartWeek.Size = new System.Drawing.Size(69, 20);
             this.textBoxStartWeek.TabIndex = 4;
             // 
             // listView
             // 
             this.listView.Location = new System.Drawing.Point(12, 66);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(648, 466);
+            this.listView.Size = new System.Drawing.Size(563, 141);
             this.listView.TabIndex = 5;
             this.listView.UseCompatibleStateImageBehavior = false;
             // 
             // textBoxTotalWork
             // 
-            this.textBoxTotalWork.Location = new System.Drawing.Point(324, 41);
+            this.textBoxTotalWork.Location = new System.Drawing.Point(321, 12);
             this.textBoxTotalWork.Name = "textBoxTotalWork";
             this.textBoxTotalWork.Size = new System.Drawing.Size(100, 20);
             this.textBoxTotalWork.TabIndex = 6;
@@ -87,24 +87,24 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(248, 46);
+            this.label2.Location = new System.Drawing.Point(207, 15);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(70, 13);
+            this.label2.Size = new System.Drawing.Size(108, 13);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Отработано:";
+            this.label2.Text = "Отработано (чч:мм):";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(447, 46);
+            this.label3.Location = new System.Drawing.Point(207, 43);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 13);
+            this.label3.Size = new System.Drawing.Size(97, 13);
             this.label3.TabIndex = 8;
-            this.label3.Text = "Осталось:";
+            this.label3.Text = "Осталось (чч:мм):";
             // 
             // textBoxTotalWait
             // 
-            this.textBoxTotalWait.Location = new System.Drawing.Point(512, 41);
+            this.textBoxTotalWait.Location = new System.Drawing.Point(321, 40);
             this.textBoxTotalWait.Name = "textBoxTotalWait";
             this.textBoxTotalWait.Size = new System.Drawing.Size(100, 20);
             this.textBoxTotalWait.TabIndex = 9;
@@ -113,7 +113,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(672, 544);
+            this.ClientSize = new System.Drawing.Size(591, 221);
             this.Controls.Add(this.textBoxTotalWait);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -124,7 +124,7 @@
             this.Controls.Add(this.textBoxEventCount);
             this.Controls.Add(this.textBoxUserName);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "WorkWatcher";
             this.ResumeLayout(false);
             this.PerformLayout();
 
