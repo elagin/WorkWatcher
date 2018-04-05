@@ -180,10 +180,6 @@ namespace WorkWatcher
                     if (day == null)
                     {
                         day = new Day();
-                        if (item.time.Day == 15)
-                        {
-                            item.time = item.time.AddHours(7).AddMinutes(39);
-                        }
                         day.start = item.time;
                     }
                     else
@@ -198,7 +194,8 @@ namespace WorkWatcher
                             }
                             week.dayList.Add(day);
                             //file.WriteLine(String.Format("---- Смена суток ---- {0}", day.end - day.start));
-                            day = null;
+                            day = new Day();
+                            day.start = item.time;
                         }
                     }
 
