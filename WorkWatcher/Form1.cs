@@ -3,53 +3,43 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace WorkWatcher
-{
+namespace WorkWatcher {
 
-    public partial class Form1 : Form
-    {
+    public partial class Form1 : Form {
         static Timer myTimer = new Timer();
         //static bool exitFlag = false;
 
-        public class MyEvent
-        {
+        public class MyEvent {
             public DateTime time;
             public int type;
 
-            public MyEvent(long type, DateTime time)
-            {
+            public MyEvent(long type, DateTime time) {
                 this.type = unchecked((int)type);
                 this.time = time;
             }
         }
 
-        public class Session
-        {
+        public class Session {
             public DateTime start;
             public DateTime end;
         }
 
-        public class Day
-        {
+        public class Day {
             public DateTime start;
             public DateTime end;
         }
 
-        public class Week
-        {
+        public class Week {
             public List<Day> dayList;
-            public Week()
-            {
+            public Week() {
                 dayList = new List<Day>();
             }
         }
 
-        public class Month
-        {
+        public class Month {
             public List<Week> weekList;
 
-            public Month()
-            {
+            public Month() {
                 weekList = new List<Week>();
             }
         }
@@ -60,8 +50,7 @@ namespace WorkWatcher
         static DateTime dateSatrtWeek = DateTime.Today;
         static Month month = new Month();
 
-        public Form1()
-        {
+        public Form1() {
             InitializeComponent();
 
             /* Adds the event and the event handler for the method that will process the timer event to the timer. */
@@ -96,15 +85,13 @@ namespace WorkWatcher
         }
 
         // This is the method to run when the timer is raised.
-        private static void TimerEventProcessor(Object myObject, EventArgs myEventArgs)
-        {
+        private static void TimerEventProcessor(Object myObject, EventArgs myEventArgs) {
             myTimer.Stop();
             work();
             myTimer.Enabled = true;
         }
 
-        private static void work()
-        {
+        private static void work() {
             month.weekList.Clear();
             myForm.listView.Items.Clear();
 
@@ -114,23 +101,18 @@ namespace WorkWatcher
             getStartWeek();
             myForm.textBoxUserName.Text = Environment.UserDomainName + "\\" + Environment.UserName;
 
-            List<MyEvent> eventList = Start();
+            List<MyEvent> eventList = LoadEvents();
             parseEventList3(eventList);
             myForm.textBoxEventCount.Text = String.Format("Обнаружено {0} событий.", eventList.Count);
 
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"WriteLines2.txt"))
-            {
-                foreach (Week week in month.weekList)
-                {
-                    foreach (Day day in week.dayList)
-                    {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"WriteLines2.txt")) {
+                foreach (Week week in month.weekList) {
+                    foreach (Day day in week.dayList) {
                         TimeSpan diff = day.end - day.start;
                         TimeSpan total = new TimeSpan(diff.Hours - hourPerDay, diff.Minutes, diff.Seconds);
                         string[] row = { day.start.ToShortDateString(), day.start.ToShortTimeString(), day.end.ToShortTimeString(), diff.ToString(@"hh\:mm"), total.ToString() };
-                        var listViewItem = new ListViewItem(row);
-                        myForm.listView.Items.Add(listViewItem);
-                        TimeSpan spanDay = new TimeSpan(diff.Hours, diff.Minutes, diff.Seconds);
-                        totalWork = totalWork.Add(spanDay);
+                        myForm.listView.Items.Add(new ListViewItem(row));
+                        totalWork = totalWork.Add(new TimeSpan(diff.Hours, diff.Minutes, diff.Seconds));
                     }
                 }
             }
@@ -140,18 +122,12 @@ namespace WorkWatcher
             myForm.textBoxTotalWait.Text = timeLeft.ToString(@"hh\:mm");
         }
 
-        private static bool isFoundByUsername(EventLogEntry entry, string userName)
-        {
-            if (entry.UserName != null)
-            {
+        private static bool isFoundByUsername(EventLogEntry entry, string userName) {
+            if (entry.UserName != null) {
                 return entry.UserName.Equals(userName);
-            }
-            else
-            {
-                foreach (string item in entry.ReplacementStrings)
-                {
-                    if (item.Equals(userName))
-                    {
+            } else {
+                foreach (string item in entry.ReplacementStrings) {
+                    if (item.Equals(userName)) {
                         return true;
                     }
                 }
@@ -159,37 +135,28 @@ namespace WorkWatcher
             return false;
         }
 
-        private DateTime startOfDay(DateTime value)
-        {
+        private DateTime startOfDay(DateTime value) {
             DateTime res = value.AddHours(-value.Hour).AddMinutes(-value.Minute).AddSeconds(-value.Second);
             return res;
         }
 
-        private static void parseEventList3(List<MyEvent> eventList)
-        {
+        private static void parseEventList3(List<MyEvent> eventList) {
             Session currentSession = new Session();
             //for (i = ev.Entries.Count - 1; i >= 0; i--)
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"WriteLines2.txt"))
-            {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"WriteLines2.txt")) {
                 Week week = null;
                 Day day = null;
                 MyEvent prevEvent = null;
-                foreach (MyEvent item in eventList)
-                {
+                foreach (MyEvent item in eventList) {
                     //file.WriteLine(String.Format("Событие.{0};{1}", item.type, item.time));
-                    if (day == null)
-                    {
+                    if (day == null) {
                         day = new Day();
                         day.start = item.time;
-                    }
-                    else
-                    {
+                    } else {
                         //Изменился день
-                        if (myForm.startOfDay(day.start) != myForm.startOfDay(item.time))
-                        {
+                        if (myForm.startOfDay(day.start) != myForm.startOfDay(item.time)) {
                             day.end = prevEvent.time;
-                            if (week == null)
-                            {
+                            if (week == null) {
                                 week = new Week();
                             }
                             week.dayList.Add(day);
@@ -202,12 +169,10 @@ namespace WorkWatcher
                     if (item.Equals(eventList[eventList.Count - 1])) // Последняя запись, нужно завершить день
                     {
                         file.WriteLine(String.Format("Смена суток или последяя запись;{0}", item.time));
-                        if (myForm.startOfDay(day.start) == myForm.startOfDay(item.time))
-                        {
+                        if (myForm.startOfDay(day.start) == myForm.startOfDay(item.time)) {
                             DateTime now = DateTime.Now;
                             day.end = now.AddMilliseconds(-now.Millisecond); ; //Мы еще на работе.
-                            if (week == null)
-                            {
+                            if (week == null) {
                                 week = new Week();
                             }
                             week.dayList.Add(day);
@@ -221,39 +186,30 @@ namespace WorkWatcher
             }
         }
 
-        private void parseEventList2()
-        {
+        private void parseEventList2() {
             List<MyEvent> eventList = new List<MyEvent>();
             Session currentSession = new Session();
             //for (i = ev.Entries.Count - 1; i >= 0; i--)
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"WriteLines2.txt"))
-            {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"WriteLines2.txt")) {
                 Week week = null;
                 Day day = null;
                 MyEvent prevEvent = null;
-                foreach (MyEvent item in eventList)
-                {
-                    switch (item.type)
-                    {
+                foreach (MyEvent item in eventList) {
+                    switch (item.type) {
                         case 4801:
                         //file.WriteLine(String.Format("Разблокирована рабочая станция.;{0}", item.time));
                         case 4800:
                             //file.WriteLine(String.Format("Разблокирована рабочая станция.;{0}", item.time));
                             file.WriteLine(String.Format("Событие.{0};{1}", item.type, item.time));
-                            if (day == null)
-                            {
+                            if (day == null) {
                                 day = new Day();
                                 day.start = item.time;
-                            }
-                            else
-                            {
+                            } else {
                                 //Изменился день или последняя запись
-                                if (startOfDay(day.start) != startOfDay(item.time))
-                                {
+                                if (startOfDay(day.start) != startOfDay(item.time)) {
                                     //file.WriteLine(String.Format("Смена суток или последяя запись;{0}", item.time));
                                     day.end = prevEvent.time;
-                                    if (week == null)
-                                    {
+                                    if (week == null) {
                                         week = new Week();
                                     }
                                     week.dayList.Add(day);
@@ -261,67 +217,65 @@ namespace WorkWatcher
                                 }
                             }
                             break;
-/*
-                        case 4800:
-                            file.WriteLine(String.Format("Заблокирована рабочая станция.;{0}", item.time));
-                            if (day == null)
-                            {
-                                day = new Day();
-                                day.start = item.time;
-                            }
-                            else
-                            {
-                                day.end = item.time;
-                                if (week == null)
-                                {
-                                    week = new Week();
-                                    week.dayList.Add(day);
-                                    day = null;
-                                }
-                            }
-                            break;
-*/
-/*
-                        case 4648:
-                            file.WriteLine(String.Format("Выполнена попытка входа в систему с явным указанием учетных данных.;{0}", item.time));
-                            break;
-                        case 4624:
-                            file.WriteLine(String.Format("Вход в учетную запись выполнен успешно.;{0}", item.time));
-                            break;
-                        case 4672:
-                            file.WriteLine(String.Format("Новому сеансу входа назначены специальные привилегии.;{0}", item.time));
-                            break;
-                        case 4634:
-                            file.WriteLine(String.Format("Выполнен выход учетной записи из системы.;{0}", item.time));
-                            break;
-                        case 4798:
-                            file.WriteLine(String.Format("Перечислено участие пользователя в локальных группах.;{0}", item.time));
-                            break;
-                        case 4647:
-                            file.WriteLine(String.Format("Выход, запрошенный пользователем.;{0}", item.time));
-                            break;
-                        case 4719:
-                            file.WriteLine(String.Format("Изменена политика аудита системы.;{0}", item.time));
-                            break;
-                        case 4776:
-                            file.WriteLine(String.Format("Сведения об участии в группе.;{0}", item.time));
-                            break;
-                        case 4627:
-                            file.WriteLine(String.Format("Компьютер попытался проверить учетные данные учетной записи.;{0}", item.time));
-                            break;
-                        default:
-                            file.WriteLine(String.Format("{0};{1}", item.type, item.time));
-                            break;
-*/
+                            /*
+                                                    case 4800:
+                                                        file.WriteLine(String.Format("Заблокирована рабочая станция.;{0}", item.time));
+                                                        if (day == null)
+                                                        {
+                                                            day = new Day();
+                                                            day.start = item.time;
+                                                        }
+                                                        else
+                                                        {
+                                                            day.end = item.time;
+                                                            if (week == null)
+                                                            {
+                                                                week = new Week();
+                                                                week.dayList.Add(day);
+                                                                day = null;
+                                                            }
+                                                        }
+                                                        break;
+                            */
+                            /*
+                                                    case 4648:
+                                                        file.WriteLine(String.Format("Выполнена попытка входа в систему с явным указанием учетных данных.;{0}", item.time));
+                                                        break;
+                                                    case 4624:
+                                                        file.WriteLine(String.Format("Вход в учетную запись выполнен успешно.;{0}", item.time));
+                                                        break;
+                                                    case 4672:
+                                                        file.WriteLine(String.Format("Новому сеансу входа назначены специальные привилегии.;{0}", item.time));
+                                                        break;
+                                                    case 4634:
+                                                        file.WriteLine(String.Format("Выполнен выход учетной записи из системы.;{0}", item.time));
+                                                        break;
+                                                    case 4798:
+                                                        file.WriteLine(String.Format("Перечислено участие пользователя в локальных группах.;{0}", item.time));
+                                                        break;
+                                                    case 4647:
+                                                        file.WriteLine(String.Format("Выход, запрошенный пользователем.;{0}", item.time));
+                                                        break;
+                                                    case 4719:
+                                                        file.WriteLine(String.Format("Изменена политика аудита системы.;{0}", item.time));
+                                                        break;
+                                                    case 4776:
+                                                        file.WriteLine(String.Format("Сведения об участии в группе.;{0}", item.time));
+                                                        break;
+                                                    case 4627:
+                                                        file.WriteLine(String.Format("Компьютер попытался проверить учетные данные учетной записи.;{0}", item.time));
+                                                        break;
+                                                    default:
+                                                        file.WriteLine(String.Format("{0};{1}", item.type, item.time));
+                                                        break;
+                            */
                     }
                     if (item.Equals(eventList[eventList.Count - 1])) // Это может быть последняя запись, нужно завершить день
                     {
                         file.WriteLine(String.Format("Смена суток или последяя запись;{0}", item.time));
-                        if (startOfDay(day.start) == startOfDay(item.time))
-                        {
+                        if (startOfDay(day.start) == startOfDay(item.time)) {
                             day.end = item.time;
-                            if (week == null)
-                            {
+                            if (week == null) {
                                 week = new Week();
                             }
                             week.dayList.Add(day);
@@ -333,21 +287,17 @@ namespace WorkWatcher
             }
         }
 
-        private static void getStartWeek()
-        {
-            while (dateSatrtWeek.DayOfWeek != System.DayOfWeek.Monday)
-            {
+        private static void getStartWeek() {
+            while (dateSatrtWeek.DayOfWeek != System.DayOfWeek.Monday) {
                 dateSatrtWeek = dateSatrtWeek.AddDays(-1);
             }
             myForm.textBoxStartWeek.Text = dateSatrtWeek.ToShortDateString();
         }
 
-        private static List<MyEvent> Start()
-        {
+        private static List<MyEvent> LoadEvents() {
             string logType = "Security";
             List<MyEvent> eventList = new List<MyEvent>();
-            try
-            {
+            try {
                 EventLogEntry lastEntry = null;
                 EventLog ev = new EventLog(logType, System.Environment.MachineName);
                 int LastLogToShow = ev.Entries.Count;
@@ -358,8 +308,7 @@ namespace WorkWatcher
                 DateTime currentDay = dateSatrtWeek;
                 int i;
                 //for (i = ev.Entries.Count - 1; i >= LastLogToShow - 2; i--)
-                for (i = ev.Entries.Count - 1; i >= 0; i--)
-                {
+                for (i = ev.Entries.Count - 1; i >= 0; i--) {
                     EventLogEntry CurrentEntry = ev.Entries[i];
                     //Для начала режем по датам
                     //if (CurrentEntry.TimeGenerated > DateTime.Today.AddDays(0)) // Данные до нужного диапазона
@@ -382,34 +331,28 @@ namespace WorkWatcher
 
                 ev.Close();
                 eventList.Sort((x, y) => DateTime.Compare(x.time, y.time));
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MessageBox.Show(ex.Message + "/" + ex.StackTrace, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return eventList;
         }
 
-        public class repo
-        {
+        public class repo {
             public string name;
         }
 
-        public class Err
-        {
+        public class Err {
             public string code;
         }
 
-        public class Data
-        {
+        public class Data {
             public string typeID { get; set; }
             public string typeName { get; set; }
             public string number { get; set; }
             public string info { get; set; }
         }
 
-        public class Response
-        {
+        public class Response {
             public Data[] data { get; set; }
             public Err err { get; set; }
         }
